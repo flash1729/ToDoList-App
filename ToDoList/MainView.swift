@@ -105,47 +105,65 @@ struct MainView: View {
                 }
                 .animation(.default, value: taskGroups.count)
 
-                VStack {
-                    Toggle("Add New Group", isOn: $isGroupAddMode)
+                VStack(spacing: 10) { // Adjust spacing for better layout
+                    HStack(spacing: 10) { // Adjust spacing as needed
+                        Toggle(isOn: $isGroupAddMode) {
+                            Text("Add New Group")
+                                .font(.system(size: 14)) // Smaller font size
+                        }
                         .toggleStyle(SwitchToggleStyle(tint: .purple))
-                        .padding(.horizontal)
+                        .frame(height: 30) // Set a fixed height for the toggle
 
+                        Spacer() // Push the second toggle to the right
+
+                        Toggle(isOn: $showingCompletedTasks) {
+                            Text("Show Completed Tasks")
+                                .font(.system(size: 14)) // Smaller font size
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .purple))
+                        .frame(height: 30) // Set a fixed height for the toggle
+                    }
+                    .padding(.horizontal)
+
+                    // Content based on whether 'Add New Group' is toggled
                     if isGroupAddMode {
-                        HStack {
+                        HStack(spacing: 8) {
                             TextField("Group name", text: $newGroupName)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .frame(minWidth: 0, maxWidth: .infinity) // Allow flexible width
                             
                             ColorPicker("", selection: $newGroupColor)
                                 .labelsHidden()
+                                .frame(width: 44, height: 44) // Compact ColorPicker
                             
                             Button(action: addNewGroup) {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.purple)
                                     .imageScale(.large)
                             }
+                            .buttonStyle(PlainButtonStyle()) // Make button more compact
                         }
                         .padding(.horizontal)
                         .transition(.slide)
                     } else {
-                        HStack {
+                        HStack(spacing: 8) {
                             TextField("New task", text: $newTaskTitle)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-
+                                .frame(minWidth: 0, maxWidth: .infinity) // Allow flexible width
+                            
                             Button(action: addTaskToDefaultGroup) {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.purple)
                                     .imageScale(.large)
                             }
+                            .buttonStyle(PlainButtonStyle()) // Make button more compact
                         }
                         .padding(.horizontal)
                         .transition(.slide)
                     }
                 }
                 .animation(.default, value: isGroupAddMode)
-                .padding(.vertical)
-
-                Toggle("Show Completed Tasks", isOn: $showingCompletedTasks)
-                    .padding(.horizontal)
+                .padding(.vertical, 10) // Adjust vertical padding
             }
             .navigationBarHidden(true)
             .sheet(item: $editingGroup) { group in
